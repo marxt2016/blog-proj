@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: "Lato", sans-serif;
+    background-color: #f5f5f5;
+  }
+  li {
+    @apply p-4;
+  }
+  button {
+    @apply text-white border bg-indigo-600 border-indigo-600 
+    hover:bg-transparent hover:text-indigo-600 rounded-md;
+  }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
