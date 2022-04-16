@@ -7,7 +7,7 @@ import * as yup from "yup";
 import { FcGoogle } from "react-icons/fc";
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
 import { useDispatch } from "react-redux";
-import { signup, signin } from "../actions/authorize";
+import { signup, signin } from "../store/auth";
 
 const initialForm = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
 
