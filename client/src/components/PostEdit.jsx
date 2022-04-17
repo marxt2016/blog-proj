@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createPost, updatePost } from "../actions/posts";
+import { useHistory, useLocation } from "react-router-dom";
 
-const PostEdit = ({ currentId, setCurrentId }) => {
+import { getUserDetails } from "../store/auth";
+import { createPost, getPostId, getPostsById, setPostId, updatePost } from "../store/posts";
+
+const PostEdit = () => {
   const dispatch = useDispatch();
   const [preview, setPreview] = useState();
-  const post = useSelector((state) => (currentId ? state.posts.find((p) => p._id === currentId) : null));
-  const user = JSON.parse(localStorage.getItem("profile"));
+  const location = useLocation();
+  const history = useHistory();
+  //const post = useSelector((state) => (currentId ? state.posts.find((p) => p._id === currentId) : null));
+  const postId = useSelector(getPostId());
+
+  const post = useSelector(getPostsById(postId));
+  //const user = JSON.parse(localStorage.getItem("profile"));
+  const userDetails = useSelector(getUserDetails());
+  const user = userDetails?.result;
   const [postData, setPostData] = useState({
     title: "",
     message: "",
@@ -58,17 +68,17 @@ const PostEdit = ({ currentId, setCurrentId }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (currentId) {
-      dispatch(updatePost(currentId, { ...postData, name: user?.result?.name }));
-      setCurrentId(null);
+    if (postId) {
+      dispatch(updatePost(postId, { ...postData, name: user?.name }));
+      dispatch(setPostId(""));
     } else {
-      dispatch(createPost({ ...postData, name: user?.result?.name }));
+      dispatch(createPost({ ...postData, name: user?.name }));
     }
-
+    if (location.pathname === "/postEditForm") history.push("/posts");
     clear();
   };
   const clear = () => {
-    setCurrentId(null);
+    dispatch(setPostId(""));
     setPostData({
       title: "",
       message: "",
@@ -78,7 +88,7 @@ const PostEdit = ({ currentId, setCurrentId }) => {
     });
   };
 
-  if (!user?.result?.name) {
+  if (!user?.name) {
     return null;
   }
   return (
@@ -86,7 +96,7 @@ const PostEdit = ({ currentId, setCurrentId }) => {
       <div className="md:max-w-screen-md md:m-auto mx-5">
         <form className="" onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block mb-2 font-bold text-m text-gray-700">{currentId ? "Edit " : ""}Title</label>
+            <label className="block mb-2 font-bold text-m text-gray-700">{postId ? "Edit " : ""}Title</label>
             <input
               className="w-full px-3 py-3 text-sm leading-tight text-gray-700 bg-gray-50 border rounded shadow appearance-none focus:outline-none focus:shadow-outline required:border-red-500"
               id="title"
@@ -99,7 +109,7 @@ const PostEdit = ({ currentId, setCurrentId }) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block mb-2 font-bold text-m  text-gray-700">{currentId ? "Edit " : "Post"} Message</label>
+            <label className="block mb-2 font-bold text-m  text-gray-700">{postId ? "Edit " : "Post"} Message</label>
             <textarea
               id="message"
               rows="8"
@@ -112,13 +122,13 @@ const PostEdit = ({ currentId, setCurrentId }) => {
             ></textarea>
           </div>
           <div className="mb-4">
-            <label className="block mb-2 font-bold text-m text-gray-700">{currentId ? "Edit " : ""}Author</label>
+            <label className="block mb-2 font-bold text-m text-gray-700">{postId ? "Edit " : ""}Author</label>
             <input
               className="w-full px-3 py-3 text-sm leading-tight text-gray-700 bg-gray-50 border rounded shadow appearance-none focus:outline-none focus:shadow-outline required:border-red-500"
               id="author"
               type="text"
               placeholder="Author name"
-              value={user?.result?.name}
+              value={user?.name}
               onChange={(event) => {
                 setPostData({ ...postData, name: event.target.value });
               }}

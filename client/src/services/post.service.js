@@ -11,6 +11,24 @@ const postService = {
     const { data } = await httpService.get(`${postsEndpoint}/${id}`);
     return data;
   },
+
+  createPost: async (newPost) => {
+    const { data } = await httpService.post(postsEndpoint, newPost);
+
+    return data;
+  },
+
+  updatePost: async (id, newPost) => {
+    const { data } = await httpService.patch(`${postsEndpoint}/${id}`, newPost);
+
+    return data;
+  },
+
+  deletePost: async (id) => {
+    const { data } = await httpService.delete(`${postsEndpoint}/${id}`);
+
+    return data;
+  },
 };
 
 export default postService;

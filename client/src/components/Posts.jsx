@@ -4,14 +4,14 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { getPosts, getPostsLoadingStatus } from "../store/posts";
 
-const Posts = ({ setCurrentId }) => {
-  const dispatch = useDispatch();
+const Posts = () => {
+  // const dispatch = useDispatch();
   const posts = useSelector(getPosts());
   const isLoading = useSelector(getPostsLoadingStatus());
 
   // useEffect(() => {
-  //   dispatch(getPosts());
-  // }, [dispatch]);
+  //   console.log(posts);
+  // }, [posts]);
 
   if (!posts?.length && !isLoading) return "No posts found";
   return (
@@ -27,7 +27,7 @@ const Posts = ({ setCurrentId }) => {
         <div className="w-full flex items-center justify-around flex-wrap ">
           {posts.map((post) => (
             <div className="w-96 md:max-w-md p-4" key={post._id}>
-              <Post post={post} setCurrentId={setCurrentId} />
+              <Post post={post} />
             </div>
           ))}
         </div>
