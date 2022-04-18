@@ -7,7 +7,7 @@ import { getUserDetails, logOut } from "../store/auth";
 import { useSelector } from "react-redux";
 import { getStatusLoggedIn } from "../store/auth";
 
-const NavBar = ({ isSignup, setIsSignUp }) => {
+const NavBar = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
@@ -15,8 +15,6 @@ const NavBar = ({ isSignup, setIsSignUp }) => {
   const isLoggedIn = useSelector(getStatusLoggedIn());
   const userDetails = useSelector(getUserDetails());
   const user = userDetails?.result;
-  // const token = userDetails?.token;
-  // console.log(token);
 
   useEffect(() => {
     const token = userDetails?.token;
@@ -75,13 +73,11 @@ const NavBar = ({ isSignup, setIsSignUp }) => {
           ) : (
             <>
               <div className="hidden md:flex pr-4">
-                <Link className="border-none flex items-center bg-transparent text-gray-700 mr-4" to="/signin" onClick={() => setIsSignUp(false)}>
+                <Link className="border-none flex items-center bg-transparent text-gray-700 mr-4" to="/signin">
                   Sign In
                 </Link>
                 <Link to="/signup">
-                  <button className="px-3 py-2 rounded-lg" onClick={() => setIsSignUp(true)}>
-                    Sign Up
-                  </button>
+                  <button className="px-3 py-2 rounded-lg">Sign Up</button>
                 </Link>
               </div>
               <div className="md:hidden cursor-pointer" onClick={handleClick}>

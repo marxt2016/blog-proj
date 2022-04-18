@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { getStatusLoggedIn } from "../store/auth";
 import PostEdit from "./PostEdit";
 import Posts from "./Posts";
 
-const Home = ({ currentId, setCurrentId }) => {
+const Home = () => {
   const isLoggedIn = useSelector(getStatusLoggedIn());
   return (
     <div className="flex items-start justify-around mx-5 ">
@@ -13,7 +13,7 @@ const Home = ({ currentId, setCurrentId }) => {
       </div>
       {isLoggedIn && (
         <div className="hidden md:flex py-3 items-center ">
-          <PostEdit currentId={currentId} setCurrentId={setCurrentId} />
+          <PostEdit />
         </div>
       )}
     </div>

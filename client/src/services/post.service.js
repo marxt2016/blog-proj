@@ -24,6 +24,10 @@ const postService = {
     return data;
   },
 
+  likePost: async (id) => {
+    const { data } = await httpService.patch(`${postsEndpoint}/${id}/likePost`);
+    return data;
+  },
   deletePost: async (id) => {
     const { data } = await httpService.delete(`${postsEndpoint}/${id}`);
 

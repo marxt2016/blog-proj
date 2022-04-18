@@ -1,13 +1,14 @@
 import userService from "../services/users.service";
 import { createSlice } from "@reduxjs/toolkit";
+import { deleteUserProfile, getUserProfile, setUserProfile } from "../services/localStorage.service";
 
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    entities: null,
+    entities: getUserProfile(),
     isLoading: true,
     error: null,
-    isLoggedIn: false,
+    isLoggedIn: getUserProfile() ? true : false,
   },
   reducers: {
     authRequested: (state) => {
@@ -18,7 +19,6 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.isLoggedIn = true;
     },
-
     authRequestFailed: (state, action) => {
       state.error = action.payload;
     },
@@ -30,14 +30,14 @@ const userSlice = createSlice({
 });
 
 const { reducer: userReducer, actions } = userSlice;
-const { authRequested, authReceived, authRequestFailed, logout } = actions;
+const { authRequested, authReceived, authRequestFailed, logout, currentUserReceived } = actions;
 
 export const signup = (formData, history) => async (dispatch) => {
   dispatch(authRequested());
   try {
     const data = await userService.signUp(formData);
     history.push("/");
-    localStorage.setItem("profile", JSON.stringify(data));
+    setUserProfile(data);
     dispatch(authReceived(data));
   } catch (error) {
     dispatch(authRequestFailed(error.message));
@@ -47,7 +47,7 @@ export const signin = (formData, history) => async (dispatch) => {
   dispatch(authRequested());
   try {
     const data = await userService.signIn(formData);
-    localStorage.setItem("profile", JSON.stringify(data));
+    setUserProfile(data);
     history.push("/");
     dispatch(authReceived(data));
   } catch (error) {
@@ -57,7 +57,7 @@ export const signin = (formData, history) => async (dispatch) => {
 export const signinG = (data) => async (dispatch) => {
   dispatch(authRequested());
   try {
-    localStorage.setItem("profile", JSON.stringify(data));
+    setUserProfile(data);
     dispatch(authReceived(data));
   } catch (error) {
     dispatch(authRequestFailed(error.message));
@@ -65,11 +65,21 @@ export const signinG = (data) => async (dispatch) => {
 };
 
 export const logOut = () => (dispatch) => {
-  localStorage.clear();
+  deleteUserProfile();
   dispatch(logout());
 };
+export const loadUser = () => async (dispatch) => {
+  dispatch(authRequested());
+  try {
+    const result = await userService.getCurrentUser();
+    dispatch(currentUserReceived(result));
+  } catch (error) {
+    dispatch(authRequestFailed(error.message));
+  }
+};
 
-export const getStatusLoggedIn = () => (state) => localStorage.getItem("profile") ? true : state.auth.isLoggedIn;
-export const getUserDetails = () => (state) => localStorage.getItem("profile") ? JSON.parse(localStorage.getItem("profile")) : state.auth.entities;
+export const getStatusLoggedIn = () => (state) => state.auth.isLoggedIn;
+export const getUserDetails = () => (state) => state.auth.entities;
+export const getCurrentUser = () => (state) => state.auth.currentUser;
 
 export default userReducer;

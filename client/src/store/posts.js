@@ -80,6 +80,16 @@ export const updatePost = (id, newPost) => async (dispatch) => {
   }
 };
 
+export const likePost = (id) => async (dispatch) => {
+  dispatch(postUpdateRequested());
+  try {
+    const data = await postService.likePost(id);
+    dispatch(postUpdated(data));
+  } catch (error) {
+    dispatch(postUpdateFailed(error.message));
+  }
+};
+
 export const deletePost = (id) => async (dispatch) => {
   try {
     await postService.deletePost(id);

@@ -2,12 +2,12 @@ import React from "react";
 import moment from "moment";
 import { useDispatch } from "react-redux";
 import { ThumbUpIcon, DotsVerticalIcon } from "@heroicons/react/outline";
-import { likePost } from "../actions/posts";
+
 import { useHistory } from "react-router-dom";
 import { getUserDetails } from "../store/auth";
 import { useSelector } from "react-redux";
 import { getStatusLoggedIn } from "../store/auth";
-import { setPostId, deletePost } from "../store/posts";
+import { setPostId, deletePost, likePost } from "../store/posts";
 
 const Post = ({ post }) => {
   const dispatch = useDispatch();
@@ -26,7 +26,7 @@ const Post = ({ post }) => {
       <div className="p-3">
         <div className="flex justify-between text-m2 text-gray-500">
           <h5 className="text-gray-900 font-bold text-2xl  tracking-tight mb-2 truncate ...">{post.title}</h5>
-          {isLoggedIn && (user.googleId === post?.author || user._id === post?.author) && (
+          {isLoggedIn && (user?.googleId === post?.author || user?._id === post?.author) && (
             <p className="cursor-pointer" onClick={() => dispatch(setPostId(post._id))}>
               <DotsVerticalIcon className="w-5" />
             </p>

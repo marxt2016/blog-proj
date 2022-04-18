@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
@@ -8,10 +8,8 @@ import Home from "./components/Home";
 import PostEdit from "./components/PostEdit";
 import PostDetails from "./components/PostDetails";
 import PostsLoader from "./hoc/postsLoader";
-import Posts from "./components/Posts";
 
 const App = () => {
-  // const user = JSON.parse(localStorage.getItem("profile"));
   return (
     <PostsLoader>
       <BrowserRouter>
