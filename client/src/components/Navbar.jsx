@@ -3,29 +3,33 @@ import decode from "jwt-decode";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { MenuIcon, XIcon } from "@heroicons/react/outline";
 import { useDispatch } from "react-redux";
+import { getUserDetails, logOut } from "../store/auth";
+import { useSelector } from "react-redux";
+import { getStatusLoggedIn } from "../store/auth";
 
-const NavBar = ({ isSignup, setIsSignUp }) => {
+const NavBar = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
   const [nav, setNav] = useState(false);
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+  const isLoggedIn = useSelector(getStatusLoggedIn());
+  const userDetails = useSelector(getUserDetails());
+  const user = userDetails?.result;
 
   useEffect(() => {
-    const token = user?.token;
+    const token = userDetails?.token;
     if (token) {
       const decodedToken = decode(token);
+
       if (decodedToken.exp * 1000 < new Date().getTime()) logout();
     }
-    setUser(JSON.parse(localStorage.getItem("profile")));
   }, [location]);
 
   const handleClick = () => setNav(!nav);
 
   const logout = () => {
-    dispatch({ type: "LOGOUT" });
+    dispatch(logOut());
     history.push("/");
-    setUser(null);
     setNav(!nav);
   };
   return (
@@ -35,10 +39,10 @@ const NavBar = ({ isSignup, setIsSignUp }) => {
           <h2 className="text-3xl font-bold text-gray-700 mr-4 sm:text-4xl p-1">
             <Link to="/">Blog</Link>
           </h2>
-          {user?.result.name ? (
+          {isLoggedIn ? (
             <ul className="hidden text-gray-700 md:flex">
               <li>
-                <Link className="text-gray-700 hover:text-indigo-700" to="/post">
+                <Link className="text-gray-700 hover:text-indigo-700" to="/postEditForm">
                   Create Post
                 </Link>
               </li>
@@ -49,15 +53,15 @@ const NavBar = ({ isSignup, setIsSignUp }) => {
           {user ? (
             <>
               <div className="hidden md:flex justify-between items-center space-x-6">
-                {user.result.imageUrl ? (
-                  <img alt={user.result.name.charAt(0)} src={user.result.imageUrl} className="h-10 w-10 object-cover rounded-full" />
+                {user.imageUrl ? (
+                  <img alt={user.name.charAt(0)} src={user.imageUrl} className="h-10 w-10 object-cover rounded-full" />
                 ) : (
                   <div className="font-bold text-gray-700 rounded-full bg-white flex items-center justify-center w-10 h-10">
-                    {user.result.name.charAt(0).toUpperCase()}
+                    {user.name.charAt(0).toUpperCase()}
                   </div>
                 )}
 
-                <p>{user.result.name}</p>
+                <p>{user.name}</p>
                 <button className="px-3 py-2 rounded-lg" onClick={logout}>
                   Logout
                 </button>
@@ -69,13 +73,11 @@ const NavBar = ({ isSignup, setIsSignUp }) => {
           ) : (
             <>
               <div className="hidden md:flex pr-4">
-                <Link className="border-none flex items-center bg-transparent text-gray-700 mr-4" to="/login" onClick={() => setIsSignUp(false)}>
+                <Link className="border-none flex items-center bg-transparent text-gray-700 mr-4" to="/signin">
                   Sign In
                 </Link>
-                <Link to="/login">
-                  <button className="px-3 py-2 rounded-lg" onClick={() => setIsSignUp(true)}>
-                    Sign Up
-                  </button>
+                <Link to="/signup">
+                  <button className="px-3 py-2 rounded-lg">Sign Up</button>
                 </Link>
               </div>
               <div className="md:hidden cursor-pointer" onClick={handleClick}>
@@ -85,17 +87,21 @@ const NavBar = ({ isSignup, setIsSignUp }) => {
           )}
         </div>
       </div>
+
       <ul className={!nav ? "hidden" : "absolute bg-indigo-50 w-full px-8 md:hidden"}>
-        <li className="border-b-2 border-indigo-300 w-full ">
-          <Link className="text-gray-700 hover:text-indigo-700" to="/post" onClick={handleClick}>
-            Create Post
-          </Link>
-        </li>
+        {isLoggedIn && (
+          <li className="border-b-2 border-indigo-300 w-full ">
+            <Link className="text-gray-700 hover:text-indigo-700" to="/postEditForm" onClick={handleClick}>
+              Create Post
+            </Link>
+          </li>
+        )}
+
         <div>
           {user ? (
             <div>
               <div className="flex mx-3 justify-between items-center space-x-6">
-                <p>{user.result.name}</p>
+                <p>{user.name}</p>
                 <button className="px-3 py-1 m-1 rounded-lg" onClick={logout}>
                   Logout
                 </button>
@@ -103,12 +109,12 @@ const NavBar = ({ isSignup, setIsSignUp }) => {
             </div>
           ) : (
             <div className="flex justify-around my-4">
-              <Link to="/login">
+              <Link to="/signin">
                 <button className="bg-transparent text-gray-600 px-6 py-2  mx-4 " onClick={handleClick}>
                   Sign In
                 </button>
               </Link>
-              <Link to="/login">
+              <Link to="/signup">
                 <button className="px-3 py-2 rounded-lg" onClick={handleClick}>
                   Sign Up
                 </button>
