@@ -105,7 +105,7 @@ export const setPostId = (id) => (dispatch) => {
 };
 
 export const getPosts = () => (state) => state.posts.posts;
-export const getPostsById = (currentId) => (state) => state.posts.posts.find((p) => p._id === currentId);
+export const getPostsById = (currentId) => (state) => state.posts.posts?.find((p) => p._id === currentId);
 export const getPostId = () => (state) => state.posts.postId;
 export const getPostsLoadingStatus = () => (state) => state.posts.isLoading;
 
