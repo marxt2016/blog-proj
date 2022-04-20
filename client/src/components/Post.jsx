@@ -1,16 +1,21 @@
 import React from "react";
 import moment from "moment";
 import { useDispatch } from "react-redux";
-
 import { ThumbUpIcon, DotsVerticalIcon } from "@heroicons/react/outline";
 
-import { deletePost, likePost } from "../actions/posts";
 import { useHistory } from "react-router-dom";
+import { getUserDetails } from "../store/auth";
+import { useSelector } from "react-redux";
+import { getStatusLoggedIn } from "../store/auth";
+import { setPostId, deletePost, likePost } from "../store/posts";
 
-const Post = ({ post, setCurrentId }) => {
+const Post = ({ post }) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const user = JSON.parse(localStorage.getItem("profile"));
+  const isLoggedIn = useSelector(getStatusLoggedIn());
+  const userDetails = useSelector(getUserDetails());
+  const user = userDetails?.result;
+
   const openDetails = () => {
     history.push(`posts/${post._id}`);
   };
@@ -21,8 +26,8 @@ const Post = ({ post, setCurrentId }) => {
       <div className="p-3">
         <div className="flex justify-between text-m2 text-gray-500">
           <h5 className="text-gray-900 font-bold text-2xl  tracking-tight mb-2 truncate ...">{post.title}</h5>
-          {(user?.result?.googleId === post?.author || user?.result?._id === post?.author) && (
-            <p className="cursor-pointer" onClick={() => setCurrentId(post._id)}>
+          {isLoggedIn && (user?.googleId === post?.author || user?._id === post?.author) && (
+            <p className="cursor-pointer" onClick={() => dispatch(setPostId(post._id))}>
               <DotsVerticalIcon className="w-5" />
             </p>
           )}
@@ -37,7 +42,7 @@ const Post = ({ post, setCurrentId }) => {
           <button className="text-white focus:ring-2 focus:ring-indigo-300 rounded-lg text-sm px-3 py-2 text-center " onClick={openDetails}>
             Read more
           </button>
-          {(user?.result?.googleId === post?.author || user?.result?._id === post?.author) && (
+          {isLoggedIn && (user?.googleId === post?.author || user?._id === post?.author) && (
             <button
               className="bg-transparent text-gray-600 hover:text-indigo-800 border-none focus:ring-2
            focus:ring-indigo-300 font-medium rounded-lg text-sm px-3 py-2 text-center"
@@ -48,7 +53,7 @@ const Post = ({ post, setCurrentId }) => {
           )}
 
           <div className="text-sm"> Likes {post.likes.length}</div>
-          {user?.result && (
+          {isLoggedIn && (
             <p className="flex justify-between text-m2 text-gray-500 hover:text-indigo-800 cursor-pointer" onClick={() => dispatch(likePost(post._id))}>
               <ThumbUpIcon className="w-5" />
             </p>

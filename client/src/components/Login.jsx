@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { Formik } from "formik";
 import { GoogleLogin } from "react-google-login";
 // import { useNavigate } from "react-router-dom";
@@ -7,16 +7,18 @@ import * as yup from "yup";
 import { FcGoogle } from "react-icons/fc";
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
 import { useDispatch } from "react-redux";
-import { signup, signin } from "../actions/authorize";
+import { signup, signin, signinG } from "../store/auth";
 
 const initialForm = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
 
-const Login = ({ isSignup, setIsSignUp }) => {
+const Login = () => {
   const [formData, setFormData] = useState(initialForm);
+  const [isSignup, setIsSignUp] = useState(false);
   // const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassord] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
   const loginSchema = yup.object().shape({
     email: yup.string().email("Email is invalid").required("Email is required"),
     password: yup.string().min(4, "Password is too short").max(14, "Password is too long").required("Password is required"),
@@ -38,6 +40,14 @@ const Login = ({ isSignup, setIsSignUp }) => {
     handleSubmitForm();
   }, [formData]);
 
+  useEffect(() => {
+    if (location.pathname === "/signup") {
+      setIsSignUp(true);
+    } else {
+      setIsSignUp(false);
+    }
+  }, [location.pathname]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -54,7 +64,7 @@ const Login = ({ isSignup, setIsSignUp }) => {
     const result = res?.profileObj;
     const token = res?.tokenId;
     try {
-      dispatch({ type: "AUTHORIZE", payload: { result, token } });
+      dispatch(signinG({ result, token }));
       history.push("/");
     } catch (error) {
       console.log(error);

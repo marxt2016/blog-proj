@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -42,5 +40,17 @@ export const signup = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Generic server error for sign up" });
+  }
+};
+
+export const getuser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+
+    res.json(user);
+  } catch (error) {
+    res.status(404).json({ error: error });
   }
 };
