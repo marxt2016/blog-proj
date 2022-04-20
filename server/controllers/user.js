@@ -8,18 +8,35 @@ export const signin = async (req, res) => {
   try {
     const existingUser = await User.findOne({ email });
 
-    if (!existingUser) return res.status(404).json({ message: "No such user registered" });
+    if (!existingUser)
+      return res.status(400).json({
+        error: {
+          message: "No such user registered",
+          code: 400,
+        },
+      });
 
     const isPasswordMatch = await bcrypt.compare(password, existingUser.password);
 
-    if (!isPasswordMatch) return res.status(400).json({ message: "Invalid login data" });
+    if (!isPasswordMatch)
+      return res.status(400).json({
+        error: {
+          message: "Invalid login data",
+          code: 400,
+        },
+      });
 
     const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, "test", { expiresIn: "2h" });
 
     res.json({ result: existingUser, token });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Generic server error for sign in" });
+    res.status(500).json({
+      error: {
+        message: "Generic server error for sign in",
+        code: 500,
+      },
+    });
   }
 };
 
@@ -28,9 +45,21 @@ export const signup = async (req, res) => {
   try {
     const existingUser = await User.findOne({ email });
 
-    if (existingUser) return res.status(400).json({ message: "User alreday registered" });
+    if (existingUser)
+      return res.status(400).json({
+        error: {
+          message: "User alreday registered",
+          code: 400,
+        },
+      });
 
-    if (password !== confirmPassword) return res.status(400).json({ message: "Passwords don't match!" });
+    if (password !== confirmPassword)
+      return res.status(400).json({
+        error: {
+          message: "Passwords don't match!",
+          code: 400,
+        },
+      });
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -39,7 +68,12 @@ export const signup = async (req, res) => {
     res.json({ result, token });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Generic server error for sign up" });
+    res.status(500).json({
+      error: {
+        message: "Generic server error for sign up",
+        code: 500,
+      },
+    });
   }
 };
 
