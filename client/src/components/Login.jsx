@@ -6,8 +6,8 @@ import { GoogleLogin } from "react-google-login";
 import * as yup from "yup";
 import { FcGoogle } from "react-icons/fc";
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
-import { useDispatch } from "react-redux";
-import { signup, signin, signinG } from "../store/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { signup, signin, signinG, getError } from "../store/auth";
 
 const initialForm = { firstName: "", lastName: "", email: "", password: "", confirmPassword: "" };
 
@@ -15,6 +15,8 @@ const Login = () => {
   const [formData, setFormData] = useState(initialForm);
   const [isSignup, setIsSignUp] = useState(false);
   // const [formErrors, setFormErrors] = useState({});
+  const errorServ = useSelector(getError());
+  //console.log(errors);
   const [showPassword, setShowPassord] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();

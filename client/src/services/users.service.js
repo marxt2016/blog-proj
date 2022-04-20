@@ -5,6 +5,7 @@ const usersEndpoint = "/user/";
 const userService = {
   signIn: async (formData) => {
     const { data } = await httpService.post(`${usersEndpoint}signin`, formData);
+
     return data;
   },
   signUp: async (formData) => {

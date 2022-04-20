@@ -47,11 +47,15 @@ export const signin = (formData, history) => async (dispatch) => {
   dispatch(authRequested());
   try {
     const data = await userService.signIn(formData);
-    setUserProfile(data);
-    history.push("/");
-    dispatch(authReceived(data));
+
+    if (data) {
+      console.log(data);
+      setUserProfile(data);
+      dispatch(authReceived(data));
+      history.push("/");
+    }
   } catch (error) {
-    dispatch(authRequestFailed(error.message));
+    dispatch(authRequestFailed(error.response.data.error.message));
   }
 };
 export const signinG = (data) => async (dispatch) => {
@@ -81,5 +85,6 @@ export const loadUser = () => async (dispatch) => {
 export const getStatusLoggedIn = () => (state) => state.auth.isLoggedIn;
 export const getUserDetails = () => (state) => state.auth.entities;
 export const getCurrentUser = () => (state) => state.auth.currentUser;
+export const getError = () => (state) => state.auth.error;
 
 export default userReducer;

@@ -8,7 +8,13 @@ export const signin = async (req, res) => {
   try {
     const existingUser = await User.findOne({ email });
 
-    if (!existingUser) return res.status(404).json({ message: "No such user registered" });
+    if (!existingUser)
+      return res.status(400).json({
+        error: {
+          message: "No such user registered",
+          code: 400,
+        },
+      });
 
     const isPasswordMatch = await bcrypt.compare(password, existingUser.password);
 
