@@ -1,5 +1,5 @@
 import axios from "axios";
-const http = axios.create({ baseURL: "http://localhost:5000/" });
+const http = axios.create({ baseURL: "http://31.184.253.165:80/" });
 // const http = axios.create({ baseURL: "http://backendlink/" });
 
 http.interceptors.request.use((req) => {
