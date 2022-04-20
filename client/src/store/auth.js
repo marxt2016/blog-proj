@@ -64,7 +64,7 @@ export const signinG = (data) => async (dispatch) => {
     setUserProfile(data);
     dispatch(authReceived(data));
   } catch (error) {
-    dispatch(authRequestFailed(error.message));
+    dispatch(authRequestFailed(error.response.data.error.message));
   }
 };
 
