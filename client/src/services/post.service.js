@@ -1,5 +1,5 @@
 import httpService from "./http.service";
-const postsEndpoint = "posts";
+const postsEndpoint = "api/posts";
 
 const postService = {
   fetchAll: async () => {
